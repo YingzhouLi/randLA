@@ -35,27 +35,13 @@ centerx = eff_kmeans(x,tR,5);
 MR = fun(centerx,p);
 MC = fun(x,centerp);
 
-[QC,~,~] = qr(MC,0);
-[QR,~,~] = qr(MR',0);
-
-if( tR+5 < Np && tR+5 < Nx )
-    cs = randsample(Np,tR+5);
-    rs = randsample(Nx,tR+5);
-else
-    cs = 1:Np;
-    rs = 1:Nx;
-end
-
-M1 = QC(rs,:);
-M2 = QR(cs,:);
-M3 = fun(x(rs,:),p(cs,:));
-MD = pinv(M1) * (M3* pinv(M2'));
+MD = fun(centerx,centerp);
 [U,S,V] = svd(MD,0);
 if ~isempty(S)
     idx = find(find(diag(S)>tol*S(1,1))<=r);
-    U = QC*U(:,idx);
     S = S(idx,idx);
-    V = QR*V(:,idx);
+    U = MC*U(:,idx)*diag(diag(S).^(-1));
+    V = MR'*V(:,idx)*diag(diag(S).^(-1));
 else
     U = zeros(Nx,0);
     S = zeros(0,0);
