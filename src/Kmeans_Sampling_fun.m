@@ -1,4 +1,4 @@
-function [U,S,V] = Kmeans_Sampling_fun(fun,x,p,tol,r)
+function [U,S] = Kmeans_Sampling_fun(fun,x,tol,r)
 
     function center = eff_kmeans(data, m, MaxIter)
         n = size(data,1);
@@ -25,41 +25,21 @@ function [U,S,V] = Kmeans_Sampling_fun(fun,x,p,tol,r)
     end
 
 Nx = size(x,1);
-Np = size(p,1);
 
 tR = 3*r;
 
-centerp = eff_kmeans(p,tR,5);
 centerx = eff_kmeans(x,tR,5);
 
-MR = fun(centerx,p);
-MC = fun(x,centerp);
+M = fun(x,centerx);
 
-[QC,~,~] = qr(MC,0);
-[QR,~,~] = qr(MR',0);
-
-if( tR+5 < Np && tR+5 < Nx )
-    cs = randsample(Np,tR+5);
-    rs = randsample(Nx,tR+5);
-else
-    cs = 1:Np;
-    rs = 1:Nx;
-end
-
-M1 = QC(rs,:);
-M2 = QR(cs,:);
-M3 = fun(x(rs,:),p(cs,:));
-MD = pinv(M1) * (M3* pinv(M2'));
-[U,S,V] = svd(MD,0);
+[U,S,~] = svd(fun(centerx,centerx));
 if ~isempty(S)
     idx = find(find(diag(S)>tol*S(1,1))<=r);
-    U = QC*U(:,idx);
+    U = M*U(:,idx)*(diag(diag(S(idx,idx)).^(-1)));
     S = S(idx,idx);
-    V = QR*V(:,idx);
 else
     U = zeros(Nx,0);
     S = zeros(0,0);
-    V = zeros(Np,0);
 end
 
 end
