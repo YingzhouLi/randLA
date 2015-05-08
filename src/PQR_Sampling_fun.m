@@ -29,7 +29,7 @@ M = fun(x,x(Idx,:));
 [Q,~,~] = qr(M,0);
 
 if( tR < Nx )
-    idx = randsample(Nx,5);
+    idx = randsample(Nx,tR);
     idx = union(idx,Idx);
 else
     idx = 1:Nx;
