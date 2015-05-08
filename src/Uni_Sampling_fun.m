@@ -27,9 +27,9 @@ MC = fun(x,p(Cidx,:));
 [QR,~,~] = qr(MR',0);
 
 if( tR < Np && tR < Nx )
-    rs = randsample(Nx,5);
+    rs = randsample(Nx,tR);
     rs = union(rs,Ridx);
-    cs = randsample(Np,5);
+    cs = randsample(Np,tR);
     cs = union(cs,Cidx);
 else
     rs = 1:Nx;

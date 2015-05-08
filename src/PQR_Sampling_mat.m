@@ -44,9 +44,9 @@ MC = A(:,Cidx);
 [QR,~,~] = qr(MR',0);
 
 if( tR < Np && tR < Nx )
-    cs = randsample(Np,5);
+    cs = randsample(Np,tR);
     cs = union(cs,Cidx);
-    rs = randsample(Nx,5);
+    rs = randsample(Nx,tR);
     rs = union(rs,Ridx);
 else
     cs = 1:Np;
